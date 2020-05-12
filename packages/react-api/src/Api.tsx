@@ -12,14 +12,16 @@ import { typesChain, typesSpec } from '@polkadot/apps-config/api';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { WsProvider } from '@polkadot/rpc-provider';
 import { StatusContext } from '@polkadot/react-components/Status';
-import { TokenUnit } from '@polkadot/react-components/InputNumber';
+import { TokenUnit } from '@polkadot/react-components-darwinia/InputNumber';
+import { TokenKtonUnit } from '@polkadot/react-components-darwinia/InputNumber';
 import keyring from '@polkadot/ui-keyring';
 import uiSettings from '@polkadot/ui-settings';
 import ApiSigner from '@polkadot/react-signer/ApiSigner';
-import { formatBalance, isTestChain } from '@polkadot/util';
+import { formatBalance, formatKtonBalance, isTestChain } from '@polkadot/util';
 import { setSS58Format } from '@polkadot/util-crypto';
 import addressDefaults from '@polkadot/util-crypto/address/defaults';
-
+import { setRingProperties, setKtonProperties } from '@polkadot/react-darwinia';
+import rpc from '@polkadot/react-darwinia/rpc/jsonrpc';
 import ApiContext from './ApiContext';
 import registry from './typeRegistry';
 
@@ -100,6 +102,9 @@ async function loadOnReady (api: ApiPromise): Promise<ApiState> {
     : uiSettings.prefix;
   const tokenSymbol = properties.tokenSymbol.unwrapOr(undefined)?.toString();
   const tokenDecimals = properties.tokenDecimals.unwrapOr(DEFAULT_DECIMALS).toNumber();
+  const ktonTokenSymbol = properties.ktonTokenSymbol.unwrapOr(undefined)?.toString();
+  const ktonTokenDecimals = properties.ktonTokenDecimals.unwrapOr(DEFAULT_DECIMALS).toNumber();
+
   const isDevelopment = systemChainType.isDevelopment || systemChainType.isLocal || isTestChain(systemChain);
 
   console.log(`chain: ${systemChain} (${systemChainType}), ${JSON.stringify(properties)}`);
@@ -116,6 +121,20 @@ async function loadOnReady (api: ApiPromise): Promise<ApiState> {
     unit: tokenSymbol
   });
   TokenUnit.setAbbr(tokenSymbol);
+
+  formatKtonBalance.setDefaults({
+    decimals: ktonTokenDecimals,
+    unit: ktonTokenSymbol
+  });
+  TokenKtonUnit.setAbbr(ktonTokenSymbol);
+
+  setRingProperties({
+    tokenDecimals: tokenDecimals, tokenSymbol: tokenSymbol
+  });
+
+  setKtonProperties({
+    tokenDecimals: ktonTokenDecimals, tokenSymbol: ktonTokenSymbol
+  });
 
   // finally load the keyring
   keyring.loadAll({
@@ -159,8 +178,7 @@ function Api ({ children, url }: Props): React.ReactElement<Props> | null {
     const provider = new WsProvider(url);
     const signer = new ApiSigner(queuePayload, queueSetTxStatus);
 
-    api = new ApiPromise({ provider, registry, signer, typesChain, typesSpec });
-
+    api = new ApiPromise({ provider, registry, signer, typesChain, typesSpec, rpc });
     api.on('connected', () => setIsApiConnected(true));
     api.on('disconnected', () => setIsApiConnected(false));
     api.on('ready', async (): Promise<void> => {
@@ -182,7 +200,6 @@ function Api ({ children, url }: Props): React.ReactElement<Props> | null {
   if (!props.isApiInitialized) {
     return null;
   }
-
   return (
     <ApiContext.Provider value={props}>
       {children}
