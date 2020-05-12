@@ -23,7 +23,7 @@ function transform (file, enc, done) {
 
     const parserHandler = (key, options) => {
       options.defaultValue = key;
-      options.ns = /packages\/(.*?)\/src/g.exec(file.path)[1].replace('page-', 'app-');
+      options.ns = /packages\/(.*?)\/src/g.exec(file.path)[1];
 
       this.parser.set(key, options);
     };
@@ -50,8 +50,8 @@ module.exports = {
       list: ['t', 'i18next.t', 'i18n.t']
     },
     keySeparator: false, // key separator
-    lngs: ['en'],
-    ns: findPackages().map(({ dir }) => dir.replace('page-', 'app-')),
+    lngs: ['en', 'zh'],
+    ns: findPackages().map(({ dir }) => dir),
     nsSeparator: false, // namespace separator
     resource: {
       jsonIndent: 2,

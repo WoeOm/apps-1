@@ -63,7 +63,21 @@
       "@polkadot/react-query": [ "packages/react-query/src" ],
       "@polkadot/react-query/*": [ "packages/react-query/src/*" ],
       "@polkadot/react-signer": [ "packages/react-signer/src" ],
-      "@polkadot/react-signer/*": [ "packages/react-signer/src/*" ]
+      "@polkadot/react-signer/*": [ "packages/react-signer/src/*" ],
+      "@polkadot/react-darwinia": [ "packages/react-darwinia/src" ],
+      "@polkadot/react-darwinia/*": [ "packages/react-darwinia/src/*" ],
+      "@polkadot/react-hooks-darwinia": [ "packages/react-hooks-darwinia/src" ],
+      "@polkadot/react-hooks-darwinia/*": [ "packages/react-hooks-darwinia/src/*" ],
+      "@polkadot/react-components-darwinia": [ "packages/react-components-darwinia/src" ],
+      "@polkadot/react-components-darwinia/*": [ "packages/react-components-darwinia/src/*" ],
+      "@polkadot/jsonrpc": ["packages/jsonrpc/src"],
+      "@polkadot/jsonrpc/*": ["packages/jsonrpc/src/*"],
+      "@polkadot/api-derive": ["packages/api-derive/src"],
+      "@polkadot/api-derive/*": ["packages/api-derive/src/*"],
+      "@polkadot/util": ["packages/util/src"],
+      "@polkadot/util/*": ["packages/util/src/*"],
+      "@polkadot/api/augment": ["packages/react-darwinia/src/interfaces/augment-api.ts"],
+      "@polkadot/types/augment": ["packages/react-darwinia/src/interfaces/augment-types.ts"]
     },
     "skipLibCheck": true,
     "typeRoots": [
