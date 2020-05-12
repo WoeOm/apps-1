@@ -15,7 +15,7 @@ import Tabs from '@polkadot/react-components/Tabs';
 import { useAccounts, useApi, useCall, useOwnStashInfos, useStashIds } from '@polkadot/react-hooks';
 
 import basicMd from './md/basic.md';
-import Actions from './Actions';
+// import Actions from './Actions';
 import Overview from './Overview';
 import Payouts from './Payouts';
 import Query from './Query';
@@ -58,10 +58,10 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
       name: 'overview',
       text: t('Staking overview')
     },
-    {
-      name: 'actions',
-      text: t('Account actions')
-    },
+    // {
+    //   name: 'actions',
+    //   text: t('Account actions')
+    // },
     api.query.staking.activeEra
       ? {
         name: 'payout',
@@ -138,14 +138,14 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
           />
         </Route>
       </Switch>
-      <Actions
+      {/* <Actions
         className={pathname === `${basePath}/actions` ? '' : 'staking--hidden'}
         isInElection={isInElection}
         next={next}
         ownStashes={ownStashes}
         targets={targets}
         validators={validators}
-      />
+      /> */}
       <Overview
         className={basePath === pathname ? '' : 'staking--hidden'}
         hasQueries={hasQueries}
