@@ -10,12 +10,13 @@ import cssMedia from './media';
 import cssRx from './rx';
 import cssSemantic from './semantic';
 import cssTheme from './theme';
+import cssDarwinia from './darwinia';
 
 interface Props {
   uiHighlight?: string;
 }
 
-const defaultHighlight = '#f19135'; // #999
+const defaultHighlight = '#302B3C'; // #999
 
 export default createGlobalStyle<Props>`
   .ui--highlight--all {
@@ -263,4 +264,5 @@ export default createGlobalStyle<Props>`
   ${cssMedia}
   ${cssRx}
   ${cssComponents}
+  ${cssDarwinia}
 `;

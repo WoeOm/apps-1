@@ -10,6 +10,7 @@ import SUIModal from 'semantic-ui-react/dist/commonjs/modules/Modal/Modal';
 import Actions from './Actions';
 import Column from './Column';
 import Columns from './Columns';
+import modalCloseIcon from '../styles/images/modal-close.png';
 
 type ModalType = React.FC<ModalProps> & {
   Actions: React.FC<ActionsProps>;
@@ -21,7 +22,7 @@ type ModalType = React.FC<ModalProps> & {
 };
 
 function ModalBase (props: ModalProps): React.ReactElement<ModalProps> {
-  const { children, className, header, open = true } = props;
+  const { children, className, header, onCancel, open = true } = props;
 
   return (
     <SUIModal
@@ -34,6 +35,9 @@ function ModalBase (props: ModalProps): React.ReactElement<ModalProps> {
         <SUIModal.Header>{header}</SUIModal.Header>
       )}
       {children}
+      <img className='close-btn'
+        onClick={onCancel}
+        src={modalCloseIcon} />
     </SUIModal>
   );
 }

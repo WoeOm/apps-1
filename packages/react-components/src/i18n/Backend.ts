@@ -16,30 +16,34 @@ export default class Backend {
   static type: 'backend' = 'backend'
 
   async read (lng: string, _namespace: string, responder: Callback): Promise<void> {
-    if (languageCache[lng]) {
-      return responder(null, languageCache[lng]);
+    if (languageCache[_namespace]) {
+      return responder(null, languageCache[_namespace]);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    if (!loaders[lng]) {
-      loaders[lng] = this.createLoader(lng);
+    if (!loaders[_namespace]) {
+      loaders[_namespace] = this.createLoader(lng, _namespace);
     }
 
-    const [error, data] = await loaders[lng];
+    const [error, data] = await loaders[_namespace];
 
-    return responder(error, data);
+    return responder(null, data);
   }
 
-  async createLoader (lng: string): Promise<LoadResult> {
+  async createLoader (lng: string, _namespace: string): Promise<LoadResult> {
     try {
-      const response = await fetch(`locales/${lng}/translation.json`, {});
+      if (_namespace.includes('app-')) {
+        _namespace = _namespace.replace(/app-/, 'page-');
+      }
+
+      const response = await fetch(`locales/${lng}/${_namespace}.json`, {});
 
       if (!response.ok) {
         return [`i18n: failed loading ${lng}`, response.status >= 500 && response.status < 600];
       } else {
-        languageCache[lng] = await response.json();
+        languageCache[_namespace] = await response.json();
 
-        return [null, languageCache[lng]];
+        return [null, languageCache[_namespace]];
       }
     } catch (error) {
       return [error.message, false];

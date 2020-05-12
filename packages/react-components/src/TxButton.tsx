@@ -84,7 +84,7 @@ function TxButton ({ accountId, className, extrinsic: propsExtrinsic, icon, isBa
   return (
     <Button
       className={className}
-      icon={icon || 'check'}
+      icon={icon || ''}
       isBasic={isBasic}
       isDisabled={isSending || isDisabled || needsAccount}
       isIcon={isIcon}
