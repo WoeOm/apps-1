@@ -11,7 +11,7 @@ export default function create (t: (key: string, text: string, options: { ns: st
     Component: Claims,
     display: {
       needsApi: [
-        'query.claims.claims'
+        'query.claims.claimsFromEth'
       ]
     },
     icon: 'star',

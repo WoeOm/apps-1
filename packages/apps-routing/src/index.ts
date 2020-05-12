@@ -9,7 +9,8 @@ import appSettings from '@polkadot/ui-settings';
 // When adding here, also ensure to add to Dummy.tsx
 
 import template from './123code';
-import accounts from './accounts';
+// import accounts from './accounts';
+import account from './account';
 import claims from './claims';
 import contracts from './contracts';
 import council from './council';
@@ -24,38 +25,49 @@ import parachains from './parachains';
 import settings from './settings';
 import society from './society';
 import staking from './staking';
+import stakingDarwinia from './staking-darwinia';
+import scan from './scan';
 import storage from './storage';
 import sudo from './sudo';
 import techcomm from './techcomm';
 import toolbox from './toolbox';
-import transfer from './transfer';
+// import transfer from './transfer';
 import treasury from './treasury';
+import vanity from './vanity';
 
 export default function create (t: (key: string, text: string, options: { ns: string }) => string): Routes {
   return appSettings.uiMode === 'light'
     ? [
       // dashboard,
-      explorer(t),
-      accounts(t),
+      // accounts(t),
+      account(t),
       claims(t),
-      transfer(t),
-      genericAsset(t),
-      null,
-      staking(t),
-      democracy(t),
-      council(t),
+      scan(t),
+      stakingDarwinia(t),
+      // transfer(t),
+      // genericAsset(t),
+      vanity(t),
+      // null,
+      // staking(t),
+      // explorer(t),
+      // democracy(t),
+      // council(t),
       // TODO Not sure about the inclusion of treasury, parachains & society here
       null,
       settings(t)
     ]
     : [
       // dashboard(t),
-      explorer(t),
-      accounts(t),
+      // accounts(t),
+      account(t),
       claims(t),
-      transfer(t),
-      genericAsset(t),
+      scan(t),
+      stakingDarwinia(t),
+      // transfer(t),
+      vanity(t),
       null,
+      genericAsset(t),
+      explorer(t),
       staking(t),
       democracy(t),
       council(t),
@@ -63,7 +75,6 @@ export default function create (t: (key: string, text: string, options: { ns: st
       techcomm(t),
       parachains(t),
       society(t),
-      null,
       contracts(t),
       storage(t),
       extrinsics(t),

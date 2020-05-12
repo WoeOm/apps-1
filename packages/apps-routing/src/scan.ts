@@ -4,18 +4,18 @@
 
 import { Route } from './types';
 
-import Staking from '@polkadot/app-staking';
+import Scan from '@polkadot/app-staking-darwinia/explorer';
 
 export default function create (t: (key: string, text: string, options: { ns: string }) => string): Route {
   return {
-    Component: Staking,
+    Component: Scan,
     display: {
       needsApi: [
         ['tx.staking.bond']
       ]
     },
-    icon: 'certificate',
-    name: 'staking',
-    text: t('nav.stakinginfo', 'Staking', { ns: 'apps-routing' })
+    icon: 'bullseye',
+    name: 'scan',
+    text: t('nav.scan', 'Staking Scan', { ns: 'apps-routing' })
   };
 }

@@ -4,7 +4,7 @@
 
 import { Route } from './types';
 
-import Staking from '@polkadot/app-staking';
+import Staking from '@polkadot/app-staking-darwinia';
 
 export default function create (t: (key: string, text: string, options: { ns: string }) => string): Route {
   return {
@@ -15,7 +15,7 @@ export default function create (t: (key: string, text: string, options: { ns: st
       ]
     },
     icon: 'certificate',
-    name: 'staking',
-    text: t('nav.stakinginfo', 'Staking', { ns: 'apps-routing' })
+    name: 'stakings',
+    text: t('nav.staking', 'Staking', { ns: 'apps-routing' })
   };
 }

@@ -4,18 +4,17 @@
 
 import { Route } from './types';
 
-import Staking from '@polkadot/app-staking';
+import Vanity from '@polkadot/app-account/vanityAccount';
 
 export default function create (t: (key: string, text: string, options: { ns: string }) => string): Route {
   return {
-    Component: Staking,
+    Component: Vanity,
     display: {
       needsApi: [
-        ['tx.staking.bond']
       ]
     },
-    icon: 'certificate',
-    name: 'staking',
-    text: t('nav.stakinginfo', 'Staking', { ns: 'apps-routing' })
+    icon: 'users',
+    name: 'vanity',
+    text: t('nav.vanity', 'Vanity', { ns: 'apps-routing' })
   };
 }
