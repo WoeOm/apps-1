@@ -1,11 +1,11 @@
-// Copyright 2017-2020 @polkadot/app-claims authors & contributors
+// Copyright 2017-2020 @polkadot/app-123code authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { Option } from '@polkadot/types';
 import { BalanceOf, EthereumAddress } from '@polkadot/types/interfaces';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Button, Card } from '@polkadot/react-components';
 import { useApi } from '@polkadot/react-hooks';
@@ -13,40 +13,44 @@ import { FormatBalance } from '@polkadot/react-query';
 
 import { useTranslation } from './translate';
 import { addrToChecksum } from './util';
+import { ChainType } from './types';
 
 interface Props {
   button: React.ReactNode;
   className?: string;
   ethereumAddress: EthereumAddress | null;
+  chain: ChainType;
 }
 
-function Claim ({ button, className, ethereumAddress }: Props): React.ReactElement<Props> | null {
+function Claim ({ button, chain, className, ethereumAddress }: Props): React.ReactElement<Props> | null {
   const { t } = useTranslation();
   const { api } = useApi();
   const [claimValue, setClaimValue] = useState<BalanceOf | null>(null);
   const [claimAddress, setClaimAddress] = useState<EthereumAddress | null>(null);
   const [isBusy, setIsBusy] = useState(false);
+  const chainToName = {
+    eth: t('Ethereum'),
+    tron: t('Tron')
+  };
 
-  const _fetchClaim = useCallback(
-    (address: EthereumAddress): void => {
-      setIsBusy(true);
+  const _fetchClaim = (address: EthereumAddress, chain: ChainType): void => {
+    setIsBusy(true);
 
-      api.query.claims
-        .claims<Option<BalanceOf>>(address)
-        .then((claim): void => {
-          setClaimValue(claim.unwrapOr(null));
-          setIsBusy(false);
-        })
-        .catch((): void => setIsBusy(false));
-    },
-    [api]
-  );
+    api.query.claims
+      [chain === 'eth' ? 'claimsFromEth' : 'claimsFromTron']<Option<BalanceOf>>(address)
+      .then((claim): void => {
+        setClaimValue(claim.unwrapOr(null));
+        setIsBusy(false);
+      })
+      .catch((): void => setIsBusy(false));
+  };
 
   useEffect((): void => {
-    setClaimAddress(ethereumAddress);
-
-    ethereumAddress && _fetchClaim(ethereumAddress);
-  }, [_fetchClaim, ethereumAddress]);
+    if (ethereumAddress !== claimAddress) {
+      setClaimAddress(ethereumAddress);
+      ethereumAddress && _fetchClaim(ethereumAddress, chain);
+    }
+  }, [ethereumAddress]);
 
   if (isBusy || !claimAddress) {
     return null;
@@ -60,8 +64,12 @@ function Claim ({ button, className, ethereumAddress }: Props): React.ReactEleme
       isSuccess={!!hasClaim}
     >
       <div className={className}>
-        {t('Your Ethereum account')}
-        <h3>{addrToChecksum(claimAddress.toString())}</h3>
+        {t('Your {{chain}} account', {
+          replace: {
+            chain: chainToName[chain]
+          }
+        })}
+        <h3>{addrToChecksum(claimAddress.toString(), chain)}</h3>
         {hasClaim && claimValue
           ? (
             <>
@@ -80,7 +88,7 @@ function Claim ({ button, className, ethereumAddress }: Props): React.ReactEleme
   );
 }
 
-export default React.memo(styled(Claim)`
+export default styled(Claim)`
   font-size: 1.15rem;
   display: flex;
   flex-direction: column;
@@ -105,4 +113,4 @@ export default React.memo(styled(Claim)`
     font-size: 2.5rem;
     font-weight: 200;
   }
-`);
+`;

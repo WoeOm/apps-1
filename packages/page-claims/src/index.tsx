@@ -1,4 +1,5 @@
-// Copyright 2017-2020 @polkadot/app-claims authors & contributors
+/* eslint-disable @typescript-eslint/camelcase */
+// Copyright 2017-2020 @polkadot/app-123code authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
@@ -12,11 +13,11 @@ import styled from 'styled-components';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { withApi, withMulti } from '@polkadot/react-api/hoc';
 import { Button, Card, Columar, Column, InputAddress, Tooltip } from '@polkadot/react-components';
-import { TokenUnit } from '@polkadot/react-components/InputNumber';
+import { TokenUnit } from '@polkadot/react-components-darwinia/InputNumber';
 import TxModal, { TxModalState, TxModalProps } from '@polkadot/react-components/TxModal';
 import { u8aToHex, u8aToString } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
-
+import { ChainType } from './types';
 import ClaimDisplay from './Claim';
 import { recoverFromJSON } from './util';
 
@@ -28,21 +29,22 @@ enum Step {
   Claim = 2,
 }
 
-interface Props extends AppProps, ApiProps, I18nProps, TxModalProps {}
+interface Props extends AppProps, ApiProps, I18nProps, TxModalProps { }
 
 interface State extends TxModalState {
   didCopy: boolean;
   ethereumAddress: EthereumAddress | null;
   claim?: Balance | null;
-  signature?: EcdsaSignature | null;
+  signature?: { tron: EcdsaSignature } | { eth: EcdsaSignature } | null;
   step: Step;
+  chain: ChainType;
 }
 
 const Payload = styled.pre`
   cursor: copy;
   font-family: monospace;
   border: 1px dashed #c2c2c2;
-  background: #f2f2f2;
+  background: #fafafa;
   padding: 1rem;
   width: 100%;
   margin: 1rem 0;
@@ -63,11 +65,11 @@ const Signature = styled.textarea`
     color: rgba(0, 0, 0, 0.5);
   }
 
-  &::-ms-input-placeholder {
+  &:-ms-input-placeholder {
     color: rgba(0, 0, 0, 0.5);
   }
 
-  &:-ms-input-placeholder {
+  &::-ms-input-placeholder {
     color: rgba(0, 0, 0, 0.5);
   }
 `;
@@ -82,7 +84,8 @@ class ClaimsApp extends TxModal<Props, State> {
       didCopy: false,
       ethereumAddress: null,
       signature: null,
-      step: 0
+      step: 0,
+      chain: 'eth'
     };
     this.state = this.defaultState;
   }
@@ -97,7 +100,7 @@ class ClaimsApp extends TxModal<Props, State> {
 
   public render (): React.ReactNode {
     const { api, systemChain = '', t } = this.props;
-    const { accountId, didCopy, ethereumAddress, signature, step } = this.state;
+    const { accountId, chain, didCopy, ethereumAddress, signature, step } = this.state;
 
     const payload = accountId
       ? (
@@ -110,7 +113,11 @@ class ClaimsApp extends TxModal<Props, State> {
       <main>
         <header />
         <h1>
-          <Trans>claim your <em>{TokenUnit.abbr}</em> tokens</Trans>
+          {t('Claim your {{token}} tokens', {
+            replace: {
+              token: TokenUnit.abbr
+            }
+          })}
         </h1>
         <Columar>
           <Column>
@@ -140,7 +147,7 @@ class ClaimsApp extends TxModal<Props, State> {
             </Card>
             {(step >= Step.Sign && !!accountId) && (
               <Card>
-                <h3>{t('2. Sign ETH transaction')}</h3>
+                <h3>{t('2. Sign ETH/TRON transaction')}</h3>
                 <CopyToClipboard
                   onCopy={this.onCopy}
                   text={payload}
@@ -158,12 +165,21 @@ class ClaimsApp extends TxModal<Props, State> {
                   trigger='tx-payload'
                 />
                 <div>
-                  {t('Copy the above string and sign an Ethereum transaction with the account you used during the pre-sale in the wallet of your choice, using the string as the payload, and then paste the transaction signature object below')}
-                  :
+                  {t('Method 1:Copy the above string and sign an Ethereum/Tron transaction with the account that got airdrop in the wallet of your choice, using the string as the payload, and copy the transaction signature.')}
+                  <br/>
+                  {t('Method 2: Use the [')}<a href='https://claim.darwinia.network'
+                    rel='noopener noreferrer'
+                    style={{ textDecoration: 'underline' }}
+                    target='_blank'>{t('cRING Claim Tool')}</a>{t('] generate and copy the transaction signature.')}
+                  <br/>
+                  <br/>
+                  <p>
+                    {t('Please paste the transaction signature object below')} :</p>
+
                 </div>
                 <Signature
                   onChange={this.onChangeSignature}
-                  placeholder='{\n  "address": "0x ...",\n  "msg": "Pay KSMs to the Kusama account: ...",\n  "sig": "0x ...",\n  "version": "2"\n}'
+                  placeholder='{\n  "address": "0x ...",\n  "msg": "Pay RINGs to the Crab account: ...",\n  "sig": "0x ...",\n  "version": "2"\n}'
                   rows={10}
                 />
                 {(step === Step.Sign) && (
@@ -184,6 +200,7 @@ class ClaimsApp extends TxModal<Props, State> {
             {(step >= Step.Claim) && (
               <ClaimDisplay
                 button={this.renderTxButton()}
+                chain={chain}
                 ethereumAddress={ethereumAddress}
               />
             )}
@@ -206,11 +223,11 @@ class ClaimsApp extends TxModal<Props, State> {
   protected txMethod = (): string => 'claims.claim';
 
   protected txParams = (): [string | null, EcdsaSignature | null] => {
-    const { accountId, signature } = this.state;
+    const { accountId, chain, signature } = this.state;
 
     return [
       accountId ? accountId.toString() : null,
-      signature || null
+      { [chain]: signature } || null
     ];
   }
 
@@ -229,6 +246,7 @@ class ClaimsApp extends TxModal<Props, State> {
 
   protected onChangeSignature = (event: React.SyntheticEvent<Element>): void => {
     const { value: signatureJson } = event.target as HTMLInputElement;
+    const recover = recoverFromJSON(signatureJson);
 
     this.setState(({ step }: State): Pick<State, never> => ({
       ...(
@@ -236,7 +254,7 @@ class ClaimsApp extends TxModal<Props, State> {
           ? { step: Step.Sign }
           : {}
       ),
-      ...recoverFromJSON(signatureJson)
+      ...recover
     }));
   }
 
