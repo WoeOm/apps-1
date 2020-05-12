@@ -15,12 +15,8 @@ export default function create (t: (key: string, text: string, options: { ns: st
       value: 'en'
     },
     {
-      text: '汉语',
+      text: '中文',
       value: 'zh'
-    },
-    {
-      text: 'русский',
-      value: 'ru'
     }
     // For ja, we only have the settings page, remove until comprehensive
     // , {
