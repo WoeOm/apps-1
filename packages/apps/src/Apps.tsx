@@ -101,36 +101,34 @@ function Apps ({ className }: Props): React.ReactElement<Props> {
 }
 
 export default React.memo(styled(Apps)`
+  align-items: stretch;
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
-  height: 100vh;
+  min-height: 100vh;
 
   &.theme--default {
     a.apps--SideBar-Item-NavLink {
       color: #f5f5f5;
       display: block;
-      padding: 0.75em 0.75em;
+      padding: 1.1em 0.75em 1.1em 1.4285714em;
       white-space: nowrap;
 
       &:hover {
         background: #5f5f5f;
-        border-radius: 0.28571429rem 0 0 0.28571429rem;
+        /* border-radius: 0.28571429rem 0 0 0.28571429rem; */
         color: #eee;
-        margin-right: 0.25rem;
       }
     }
 
     a.apps--SideBar-Item-NavLink-active {
-      background: #f5f5f5;
-      border-radius: 0.28571429rem 0 0 0.28571429rem;
-      /* border-bottom: 2px solid transparent; */
+      background: #fafafa;
+      /* border-radius: 0.28571429rem 0 0 0.28571429rem; */
       color: #3f3f3f;
 
       &:hover {
-        background: #f5f5f5;
+        background: #fafafa;
         color: #3f3f3f;
-        margin-right: 0;
       }
     }
   }
@@ -151,18 +149,16 @@ export default React.memo(styled(Apps)`
     }
 
     .apps--SideBar-logo {
-      .apps--SideBar-logo-inner {
-        margin: auto;
-        padding: 0;
-        width: 3rem;
+      /* margin: 0.875rem auto; */
+      padding: 0;
+      width: 100%;
 
-        img {
-          margin: 0 0.4rem;
-        }
+      img {
+        margin: 0 0.25rem 0 0;
+      }
 
-        > div.info {
-          display: none;
-        }
+      > div.info {
+        display: none;
       }
     }
 
@@ -175,7 +171,7 @@ export default React.memo(styled(Apps)`
     text-align: left;
 
     .apps--SideBar-Scroll {
-      padding-left: 0.75rem;
+      /* padding-left: 0.75rem; */
     }
   }
 
@@ -197,7 +193,7 @@ export default React.memo(styled(Apps)`
   }
 
   .apps--Menu-bg {
-    background: transparent;
+    background: rgba(0,0,0,0.6);
     height: 100%;
     left: 0;
     position: absolute;

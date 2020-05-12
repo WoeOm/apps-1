@@ -9,7 +9,7 @@ type Props = {};
 
 function NotFound (): React.ReactElement<Props> {
   return (
-    <Redirect to='/explorer' />
+    <Redirect to='/account' />
   );
 }
 

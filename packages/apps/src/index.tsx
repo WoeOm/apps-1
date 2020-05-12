@@ -4,8 +4,9 @@
 
 // setup these right at front
 import './initSettings';
-import 'semantic-ui-css/semantic.min.css';
+import './style/semantic-ui-css/semantic.css';
 import '@polkadot/react-components/i18n';
+import '@polkadot/react-darwinia/interfaces/augment-api';
 
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';

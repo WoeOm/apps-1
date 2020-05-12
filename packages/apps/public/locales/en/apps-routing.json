@@ -1,5 +1,6 @@
 {
   "nav.123-code": "Template",
+  "nav.account": "Account",
   "nav.accounts": "Accounts",
   "nav.claims": "Claim Tokens",
   "nav.contracts": "Contracts",
@@ -9,18 +10,19 @@
   "nav.explorer": "Explorer",
   "nav.extrinsics": "Extrinsics",
   "nav.generic-asset": "Generic asset",
-  "nav.github": "GitHub",
   "nav.i18n": "I18n Translator",
   "nav.js": "Javascript",
   "nav.parachains": "Parachains",
+  "nav.scan": "Staking Scan",
   "nav.settings": "Settings",
   "nav.society": "Society",
   "nav.staking": "Staking",
+  "nav.stakinginfo": "Staking Info",
   "nav.storage": "Chain state",
   "nav.sudo": "Sudo",
   "nav.tech-comm": "Tech. comm.",
   "nav.toolbox": "Toolbox",
   "nav.transfer": "Transfer",
   "nav.treasury": "Treasury",
-  "nav.wiki": "Wiki"
+  "nav.vanity": "Vanity"
 }

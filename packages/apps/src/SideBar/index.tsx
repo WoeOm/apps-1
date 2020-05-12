@@ -8,15 +8,14 @@ import React, { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { Responsive } from 'semantic-ui-react';
 import createRoutes from '@polkadot/apps-routing';
-import { Button, ChainImg, Icon, Menu, media } from '@polkadot/react-components';
+import { Button, Icon, Menu, media } from '@polkadot/react-components';
+import { ChainImg } from '@polkadot/react-components-darwinia';
 import { classes } from '@polkadot/react-components/util';
 
 import { SIDEBAR_MENU_THRESHOLD } from '../constants';
 import NetworkModal from '../modals/Network';
 import { useTranslation } from '../translate';
-import ChainInfo from './ChainInfo';
 import Item from './Item';
-import NodeInfo from './NodeInfo';
 
 interface Props {
   className?: string;
@@ -83,7 +82,19 @@ function SideBar ({ className, collapse, handleResize, isCollapsed, isMenuOpen, 
           vertical
         >
           <div className='apps--SideBar-Scroll'>
-            <ChainInfo onClick={_toggleModal('network')} />
+            <div
+              className='apps--SideBar-logo'
+              onClick={_toggleModal('network')}
+            >
+              <ChainImg />
+              {/* <div className='info'>
+                <Chain className='chain' />
+                {runtimeVersion && (
+                  <div className='runtimeVersion'>{t('version {{version}}', { replace: { version: runtimeVersion.specVersion.toNumber() } })}</div>
+                )}
+                <BestNumber label='#' />
+              </div> */}
+            </div>
             {routing.map((route, index): React.ReactNode => (
               route
                 ? (
@@ -109,29 +120,28 @@ function SideBar ({ className, collapse, handleResize, isCollapsed, isMenuOpen, 
             <Menu.Item className='apps--SideBar-Item'>
               <a
                 className='apps--SideBar-Item-NavLink'
-                href='https://github.com/polkadot-js/apps'
+                href='https://github.com/darwinia-network/'
                 rel='noopener noreferrer'
                 target='_blank'
               >
-                <Icon name='github' /><span className='text'>{t('nav.github', 'GitHub', { ns: 'apps-routing' })}</span>
+                <Icon name='github' /><span className='text'>{t('GitHub')}</span>
               </a>
             </Menu.Item>
             <Menu.Item className='apps--SideBar-Item'>
               <a
                 className='apps--SideBar-Item-NavLink'
-                href='https://wiki.polkadot.network'
+                href='https://docs.darwinia.network'
                 rel='noopener noreferrer'
                 target='_blank'
               >
-                <Icon name='book' /><span className='text'>{t('nav.wiki', 'Wiki', { ns: 'apps-routing' })}</span>
+                <Icon name='book' /><span className='text'>{t('Wiki')}</span>
               </a>
             </Menu.Item>
-            <Menu.Divider hidden />
-            {
+            {/* {
               isCollapsed
                 ? undefined
                 : <NodeInfo />
-            }
+            } */}
           </div>
           <Responsive
             className={`apps--SideBar-collapse ${isCollapsed ? 'collapsed' : 'expanded'}`}
@@ -156,11 +166,10 @@ function SideBar ({ className, collapse, handleResize, isCollapsed, isMenuOpen, 
   );
 }
 
-const sideBorderWidth = '0.65rem';
-
-export default React.memo(styled(SideBar)`
+export default styled(SideBar)`
   display: flex;
   position: relative;
+  transition: width 0.3s linear;
   z-index: 300;
 
   &.collapsed {
@@ -173,22 +182,13 @@ export default React.memo(styled(SideBar)`
 
   .apps--SideBar {
     align-items: center;
-    background: #4f4f4f;
-    box-sizing: border-box;
+    background: #302B3C;
     display: flex;
     flex-flow: column;
     height: auto;
     position: relative;
     transition: left 0.3s linear;
     width: 100%;
-
-    .apps--SideBar-border {
-      border-top: ${sideBorderWidth} solid transparent;
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-    }
 
     .ui.vertical.menu {
       display: flex;
@@ -218,19 +218,48 @@ export default React.memo(styled(SideBar)`
       align-self: flex-end;
       flex-grow: 0;
       padding: 0 !important;
-      position: relative;
       width: inherit;
+
+      .icon {
+        font-size: 1.25rem;
+      }
 
       .text {
         padding-left: 0.5rem;
+        letter-spacing: 0.3px;
+      }
+    }
+
+    .apps--SideBar-logo {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(315deg,rgba(254,56,118,1) 0%,rgba(124,48,221,1) 71%,rgba(58,48,221,1) 100%);
+      width: 100%;
+      display: flex;
+      justify-content: center;
+
+      img {
+        height: 4.28571428571rem;
+        width: 3.55rem;
       }
 
-      .ui--Badge {
-        margin: 0;
-        position: absolute;
-        right: 0.5rem;
-        top: 0.55rem;
-        z-index: 1;
+      > div.info {
+        color: white;
+        opacity: 0.75;
+        text-align: right;
+        vertical-align: middle;
+
+        > div.chain {
+          font-size: 0.9rem;
+          line-height: 1rem;
+        }
+
+        > div.runtimeVersion {
+          font-size: 0.75rem;
+          line-height: 1rem;
+        }
       }
     }
 
@@ -270,13 +299,15 @@ export default React.memo(styled(SideBar)`
 
   .toggleImg {
     cursor: pointer;
-    height: 2.75rem;
     left: 0.9rem;
     opacity: 0;
     position: absolute;
     top: 0px;
     transition: opacity 0.2s ease-in, top 0.2s ease-in;
     width: 2.75rem;
+    height: 2.75rem;
+    background-color: #000;
+    border-radius: 1.375rem;
 
     &.delayed {
       transition-delay: 0.4s;
@@ -292,4 +323,4 @@ export default React.memo(styled(SideBar)`
       top: -2.9rem !important;
     `}
   }
-`);
+`;
