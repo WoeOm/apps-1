@@ -63,7 +63,7 @@ function General ({ className, isModalContent, onClose }: Props): React.ReactEle
   );
   const _save = useCallback(
     (): void => {
-      save(settings);
+      saveAndReload(settings);
       setChanged(null);
     },
     [settings]
