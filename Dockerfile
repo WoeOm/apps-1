@@ -1,34 +1,12 @@
-FROM ubuntu:18.04 as builder
+FROM node:12.16.3 as builder
+WORKDIR /www
 
-# Install any needed packages
-RUN apt-get update && apt-get install -y curl git gnupg
+COPY . /www
 
-# install nodejs
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
-RUN apt-get install -y nodejs
+RUN yarn
 
-WORKDIR /apps
-COPY . .
+RUN yarn run build
 
-RUN npm install yarn -g
-RUN yarn && NODE_ENV=production yarn build:www
-CMD ["ls", "-al", "build"]
-
-# ===========================================================
-FROM nginx:stable-alpine
-
-# The following is mainly for doc purpose to show which ENV is supported
-ENV WS_URL=
-
-WORKDIR /usr/share/nginx/html
-
-COPY env.sh .
-
-RUN apk add --no-cache bash; chmod +x env.sh
-
-COPY docker/nginx.conf /etc/nginx/nginx.conf
-COPY --from=builder /apps/packages/apps/build /usr/share/nginx/html
-
-EXPOSE 80
-
-CMD ["/bin/bash", "-c", "/usr/share/nginx/html/env.sh && nginx -g \"daemon off;\""]
+FROM nginx:latest
+COPY --from=builder /www/packages /usr/share/nginx/html
+COPY --from=builder /www/www.conf /etc/nginx/conf.d/default.conf
