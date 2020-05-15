@@ -4,7 +4,7 @@
 
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { DeriveBalancesAll, DeriveStakingAccount, DeriveStakingOverview as DerivedStakingOverview, DeriveHeartbeats as DerivedHeartbeats, DeriveStakingQuery as DerivedStakingQuery, DeriveStakerReward } from '@polkadot/api-derive/types';
-import { AccountId, EraIndex, Exposure, StakingLedger, ValidatorPrefs, Power } from '@polkadot/types/interfaces';
+import { AccountId, EraIndex, Exposure, StakingLedger, ValidatorPrefs } from '@polkadot/types/interfaces';
 import { Codec, ITuple } from '@polkadot/types/types';
 
 import React, { useCallback, useEffect, useState, useContext } from 'react';
@@ -34,6 +34,7 @@ import PowerManage from './PowerManage';
 import Earnings from './Earnings';
 import { PayoutValidator } from '../../Payouts/types';
 import useStakerPayouts from '../../Payouts/useStakerPayouts';
+import { IndividualExposure, Power } from '@polkadot/react-darwinia/interfaces';
 
 type ValidatorInfo = ITuple<[ValidatorPrefs, Codec]>;
 
@@ -183,6 +184,8 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
   const [{ controllerId, destination, hexSessionIdNext, hexSessionIdQueue, isLoading, isOwnController, isStashNominating, isStashValidating, nominees, sessionIds, stakingLedger, validatorPrefs }, setStakeState] = useState<StakeState>({ controllerId: null, destination: 0, hexSessionIdNext: null, hexSessionIdQueue: null, isLoading: true, isOwnController: false, isStashNominating: false, isStashValidating: false, stakingLedger: null, sessionIds: [] });
   const [activeNoms, setActiveNoms] = useState<string[]>([]);
   const inactiveNoms = useInactives(stashId, nominees);
+  const stakingInfoMulti = useCall<DerivedStakingQuery[]>(api.derive.staking.queryMulti as any, [nominees || []]);
+  const [nomsPower, setNomsPower] = useState<(IndividualExposure | null)[]>([]);
   const [isBondExtraOpen, toggleBondExtra] = useToggle();
   const [isInjectOpen, toggleInject] = useToggle();
   const [isNominateOpen, toggleNominate] = useToggle();
@@ -199,6 +202,18 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
   const stakerPayoutsAfter = useStakerPayouts();
   const { allRewards: rewards } = useOwnEraRewards([stashId]);
   const isPayoutEmpty = !validators || (Array.isArray(validators) && validators.length === 0);
+
+  useEffect((): void => {
+    if (stakingInfoMulti) {
+      const power = stakingInfoMulti.map((stakingInfo: DerivedStakingQuery) => {
+        return (stakingInfo && stakingInfo.exposure)
+          ? stakingInfo.exposure.others.filter((nominator) => nominator.who.eq(stashId))[0]
+          : null;
+      });
+
+      setNomsPower(power);
+    }
+  }, [stakingInfoMulti, stashId]);
 
   useEffect((): void => {
     if (rewards) {
@@ -235,7 +250,7 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
       rewards[stashId].map(({ era }): EraIndex => era),
       rewards[stashId].reduce((result, { total }) => result.iadd(total), new BN(0))
     ]);
-  }, [rewards]);
+  }, [rewards, stashId]);
 
   useEffect((): void => {
     if (stakingInfo) {
@@ -567,7 +582,8 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
                 {nominators.length !== 0 && (
                   <div>
                     {nominators.map((nominee, index): React.ReactNode => (
-                      <div className='staking--Noms-accountbox'>
+                      <div className='staking--Noms-accountbox'
+                        key={nominee[0]}>
                         <AddressSmall
                           key={index}
                           value={nominee[0]}
@@ -591,34 +607,34 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
             <RowTitle title={t('Nominating')} />
             <Box>
               <>
-                {activeNoms.length !== 0 && (
+                {nominees.length !== 0 && (
                   <div>
-                    {activeNoms.map((nomineeId, index): React.ReactNode => (
-                      <div className='staking--Noms-accountbox'>
+                    {nominees.map((nomineeId, index): React.ReactNode => (
+                      <div className='staking--Noms-accountbox'
+                        key={nomineeId}>
                         <AddressSmall
                           key={index}
                           value={nomineeId}
-                        // withBalance={false}
-                        // withBonded
                         />
+                        <p className='staking--Noms-accountbox-power'>{formatNumber(nomsPower[index]?.power)} Power</p>
                       </div>
                     ))}
                   </div>
                 )}
-                {inactiveNoms.length !== 0 && (
+                {/* {inactiveNoms.length !== 0 && (
                   <div>
                     {inactiveNoms.map((nomineeId, index): React.ReactNode => (
-                      <div className='staking--Noms-accountbox'>
+                      <div className='staking--Noms-accountbox'
+                        key={nomineeId}>
                         <AddressSmall
                           key={index}
                           value={nomineeId}
-                        // withBalance={false}
-                        // withBonded
                         />
+                        <p className='staking--Noms-accountbox-power'>{formatNumber(nomsPower[index]?.power)} Power</p>
                       </div>
                     ))}
                   </div>
-                )}
+                )} */}
               </>
             </Box>
             {/* {isStashNominating && (

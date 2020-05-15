@@ -12,7 +12,8 @@ import BN from 'bn.js';
 import React from 'react';
 import { Checkbox } from 'semantic-ui-react';
 import { TxButton } from '@polkadot/react-components';
-import { Available, InputAddress, InputBalance, Modal, TxComponent, Dropdown } from '@polkadot/react-components-darwinia';
+import { Available, AvailableKton } from '@polkadot/react-query';
+import { InputAddress, InputBalance, Modal, TxComponent, Dropdown } from '@polkadot/react-components-darwinia';
 // import { calcTxLength } from '@polkadot/react-signer/Checks';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { withCalls, withApi, withMulti } from '@polkadot/react-api/hoc';
@@ -57,7 +58,7 @@ class BondExtra extends TxComponent<Props, State> {
     accept: false
   };
 
-  public componentDidUpdate (prevProps: Props, prevState: State): void {
+  public componentDidUpdate(prevProps: Props, prevState: State): void {
     const { balances_fees } = this.props;
     const { extrinsic } = this.state;
 
@@ -66,11 +67,11 @@ class BondExtra extends TxComponent<Props, State> {
     if ((balances_fees !== prevProps.balances_fees) ||
       hasLengthChanged
     ) {
-      this.setMaxBalance();
+      // this.setMaxBalance();
     }
   }
 
-  public render (): React.ReactNode {
+  public render(): React.ReactNode {
     const { isOpen, onClose, stashId, t } = this.props;
     const { accept, currencyType, extrinsic, maxAdditional, promiseMonth } = this.state;
     const canSubmit = !!maxAdditional && maxAdditional.gtn(0) && (promiseMonth && currencyType === 'ring' ? accept : true);
@@ -82,7 +83,7 @@ class BondExtra extends TxComponent<Props, State> {
     return (
       <Modal
         className='staking--BondExtra'
-        header= {t('Bond more funds')}
+        header={t('Bond more funds')}
         onCancel={onClose}
         size='small'
       >
@@ -103,7 +104,7 @@ class BondExtra extends TxComponent<Props, State> {
     );
   }
 
-  private renderContent (): React.ReactNode {
+  private renderContent(): React.ReactNode {
     const { stashId, systemChain, t } = this.props;
     const { accept, amountError, currencyType, maxAdditional, maxBalance, promiseMonth } = this.state;
     const isUnsafeChain = detectUnsafe(systemChain);
@@ -115,28 +116,34 @@ class BondExtra extends TxComponent<Props, State> {
           defaultValue={stashId}
           isDisabled
           label={t('stash account')}
-          labelExtra={<Available label={<span className='label'>{t('transferrable')}</span>}
-            params={stashId} />}
+          labelExtra={
+            <>
+              <Available label={<span className='label'>{t('transferrable')}</span>}
+                params={stashId} withCurrency/>
+              <AvailableKton label={<span className='label'>{t(' ')}</span>}
+                params={stashId} withCurrency/>
+            </>
+          }
         />
         <InputBalance
           autoFocus
           className='medium'
           help={t('Amount to add to the currently bonded funds. This is adjusted using the available funds on the account.')}
-          isError={!!amountError || !maxAdditional || maxAdditional.eqn(0)}
+          isError={!!amountError}
           isSiShow={false}
           isType
           label={t('additional bonded funds')}
-          maxValue={maxBalance}
+          // maxValue={maxBalance}
           onChange={this.onChangeValue}
           onChangeType={this.onChangeType}
           onEnter={this.sendTx}
-          withMax={!isUnsafeChain}
+          // withMax={!isUnsafeChain}
         />
-        <ValidateAmount
+        {/* <ValidateAmount
           accountId={stashId}
           onError={this.setAmountError}
           value={maxAdditional}
-        />
+        /> */}
         {currencyType === 'ring' ? <Dropdown
           className='medium'
           defaultValue={promiseMonth}
@@ -166,7 +173,7 @@ class BondExtra extends TxComponent<Props, State> {
     );
   }
 
-  private nextState (newState: Partial<State>): void {
+  private nextState(newState: Partial<State>): void {
     this.setState((prevState: State): State => {
       const { api } = this.props;
       const { amountError = prevState.amountError, maxAdditional = prevState.maxAdditional, maxBalance = prevState.maxBalance, currencyType = prevState.currencyType, promiseMonth = prevState.promiseMonth, accept = prevState.accept } = newState;
@@ -223,7 +230,7 @@ class BondExtra extends TxComponent<Props, State> {
   }
 
   private setAmountError = (amountError: string | null): void => {
-    this.setState({ amountError });
+    this.nextState({ amountError });
   }
 
   private onChangeType = (currencyType?: currencyType): void => {

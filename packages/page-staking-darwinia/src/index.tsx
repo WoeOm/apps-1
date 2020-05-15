@@ -5,8 +5,7 @@
 
 import { DeriveHeartbeats, DeriveStakingOverview } from '@polkadot/api-derive/types';
 import { AppProps as Props } from '@polkadot/react-components/types';
-import { AccountId } from '@polkadot/types/interfaces';
-import { ElectionStatus } from '@polkadot/types/interfaces';
+import { AccountId, ElectionStatus } from '@polkadot/types/interfaces';
 
 import React, { useEffect, useMemo, useReducer, useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -21,11 +20,11 @@ import useSessionRewards from './useSessionRewards';
 
 const STORE_CHECKED = 'accounts:checked';
 
-function reduceNominators(nominators: string[], additional: string[]): string[] {
+function reduceNominators (nominators: string[], additional: string[]): string[] {
   return nominators.concat(...additional.filter((nominator): boolean => !nominators.includes(nominator)));
 }
 
-function StakingApp({ basePath, className }: Props): React.ReactElement<Props> {
+function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const { allAccounts, hasAccounts } = useAccounts();
@@ -43,7 +42,9 @@ function StakingApp({ basePath, className }: Props): React.ReactElement<Props> {
   const hasQueries = hasAccounts && !!(api.query.imOnline?.authoredBlocks);
   const [nominators, dispatchNominators] = useReducer(reduceNominators, [] as string[]);
   const [accountChecked, toggleAccountChecked] = useAccountChecked(STORE_CHECKED);
+
   const onStatusChange = () => {};
+
   const _accountChecked = accountChecked[0];
   const isInElection = useCall<boolean>(api.query.staking?.eraElectionStatus, [], {
     transform: (status: ElectionStatus) => status.isOpen
@@ -59,19 +60,19 @@ function StakingApp({ basePath, className }: Props): React.ReactElement<Props> {
     <main className={`staking--App ${className}`}>
       {hasAccounts ? <>
         <AccountStatus
+          accountChecked={_accountChecked}
           onStatusChange={onStatusChange}
           onToggleAccountChecked={toggleAccountChecked}
-          accountChecked={_accountChecked}
         />
         <Actions
           // allRewards={allRewards}
+          accountChecked={_accountChecked}
           allStashes={allStashes}
           isInElection={isInElection}
           isVisible={pathname === `${basePath}`}
-          recentlyOnline={recentlyOnline}
           next={next}
+          recentlyOnline={recentlyOnline}
           stakingOverview={stakingOverview}
-          accountChecked={_accountChecked}
         />
       </> : null}
     </main>

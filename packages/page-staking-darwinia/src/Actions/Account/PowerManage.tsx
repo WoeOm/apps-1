@@ -13,7 +13,7 @@ import { withMulti } from '@polkadot/react-api/hoc';
 
 import translate from '../../translate';
 // import { Option, createType } from '@polkadot/types';
-import { StakingLedger } from '@polkadot/types/interfaces';
+import { StakingLedgerT as StakingLedger } from '@polkadot/react-darwinia/interfaces';
 import powerbg from '../../Assets/power-bg.svg';
 import { Power, TokenIcon } from '@polkadot/react-darwinia/components';
 import { AvailableKton, Available, Balance, BalanceKton } from '@polkadot/react-components-darwinia';
