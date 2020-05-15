@@ -12,7 +12,7 @@ import { AddressSmall, Icon } from '@polkadot/react-components';
 import { useAccounts, useApi, useCall } from '@polkadot/react-hooks';
 import { FormatBalance } from '@polkadot/react-query';
 import keyring from '@polkadot/ui-keyring';
-
+import { formatNumber } from '@polkadot/util';
 import Favorite from './Favorite';
 import NominatedBy from './NominatedBy';
 import Status from './Status';
@@ -171,7 +171,7 @@ function Address ({ address, className, filterName, hasQueries, isAuthor, isElec
       }
       <td className='number'>
         {stakeOwn?.gtn(0) && (
-          <FormatBalance value={stakeOwn} />
+          formatNumber(stakeOwn)
         )}
       </td>
       <td className='number'>

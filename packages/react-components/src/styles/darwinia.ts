@@ -122,7 +122,7 @@ export default css`
       color: ${colorBtnPrimary}!important;
     }
 
-    .ui.button {
+    .ui.button:not(.dropdown) {
       padding: 0.57em 1.5em 0.57em
     }
   }
