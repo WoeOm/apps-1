@@ -97,7 +97,7 @@ function Transfer ({ className, onClose, recipientId: propRecipientId, senderId:
             help={t('The account you will send funds from.')}
             isDisabled={!!propSenderId}
             label={t('send from account')}
-            labelExtra={<AvailableKton label={transferrable} params={senderId} withUnit/>}
+            labelExtra={<AvailableKton label={transferrable} params={senderId} withCurrency/>}
             onChange={setSenderId}
             type='account'
           />
@@ -106,7 +106,7 @@ function Transfer ({ className, onClose, recipientId: propRecipientId, senderId:
             help={t('Select a contact or paste the address you want to send funds to.')}
             isDisabled={!!propRecipientId}
             label={t('send to address')}
-            labelExtra={<AvailableKton label={transferrable} params={recipientId} withUnit/>}
+            labelExtra={<AvailableKton label={transferrable} params={recipientId} withCurrency/>}
             onChange={setRecipientId}
             type='allPlus'
           />

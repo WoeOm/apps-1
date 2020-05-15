@@ -99,7 +99,7 @@ function Transfer ({ className, onClose, recipientId: propRecipientId, senderId:
             label={t('send from account')}
             labelExtra={<Available label={transferrable}
               params={senderId}
-              withUnit/>}
+              withCurrency/>}
             onChange={setSenderId}
             type='account'
           />
@@ -110,7 +110,7 @@ function Transfer ({ className, onClose, recipientId: propRecipientId, senderId:
             label={t('send to address')}
             labelExtra={<Available label={transferrable}
               params={recipientId}
-              withUnit/>}
+              withCurrency/>}
             onChange={setRecipientId}
             type='allPlus'
           />
