@@ -204,6 +204,7 @@ export default withMulti(
       display: flex;
       flex: 1;
       padding: 15px;
+      flex-wrap: wrap;
       .power-box{
         display: flex;
         background: url(${powerbg}) no-repeat;
