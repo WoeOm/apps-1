@@ -93,7 +93,7 @@ function Sidebar ({ address, className, onClose, onUpdateName }: Props): React.R
             />
           )}
         </AccountName>
-        <div className='ui--AddressMenu-tags'>
+        {/* <div className='ui--AddressMenu-tags'>
           {isEditingTags
             ? (
               <InputTags
@@ -133,9 +133,9 @@ function Sidebar ({ address, className, onClose, onUpdateName }: Props): React.R
               onClick={toggleIsEditingTags}
             />
           )}
-        </div>
+        </div> */}
         <Flags flags={flags} />
-        <div className='ui-AddressMenu--button'>
+        {/* <div className='ui-AddressMenu--button'>
           <Button.Group>
             <Button
               icon='send'
@@ -195,7 +195,7 @@ function Sidebar ({ address, className, onClose, onUpdateName }: Props): React.R
               recipientId={address}
             />
           )}
-        </div>
+        </div> */}
       </div>
       <Identity
         address={address}
